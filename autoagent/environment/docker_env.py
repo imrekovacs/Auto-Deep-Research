@@ -53,8 +53,9 @@ class DockerEnv:
             url = "https://raw.githubusercontent.com/tjb-tech/agent.midware/refs/heads/main/tcp_server.py"
             response = requests.get(url)
             if response.status_code == 200:
-                with open(osp.join(self.local_workplace, 'tcp_server.py'), 'w') as f:
-                    f.write(response.text)
+                # Write bytes to avoid platform default encoding issues (e.g., cp1252).
+                with open(osp.join(self.local_workplace, 'tcp_server.py'), 'wb') as f:
+                    f.write(response.content)
                 assert osp.exists(osp.join(self.local_workplace, 'tcp_server.py')), "Failed to save tcp_server.py to the local workplace"
             else:
                 raise Exception(f"Failed to download tcp_server.py from GitHub. Status code: {response.status_code}")
